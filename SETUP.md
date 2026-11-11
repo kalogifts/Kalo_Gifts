@@ -6,7 +6,7 @@ What's in this folder
 |---|---|
 | `theme/` | The Shopify theme (Online Store 2.0). Same look as the current page: night green, gold, Bodoni + Manrope. |
 | `dist/kalo-theme.zip` | The theme zipped, ready to upload. |
-| `import/products.csv` | 20 products, 142 variants (5 oversized tees, 1 hoodie, 6 bottles, 2 totes, 2 hampers, 3 printed photo frames, gift wrap), with SEO titles and descriptions. Names, prices and colours are placeholders. |
+| `import/products.csv` | 28 products, 118 variants (6 oversized tees, 1 hoodie, 15 bottles, 3 photo frames, 2 hampers, the Rs. 50 gift card), with SEO titles and descriptions. Names, prices and colours are placeholders. |
 | `import/build_products.py` | Edit prices, colours or copy here and re-run to regenerate the CSV. |
 | `source/` | The original page, kept for reference. |
 
