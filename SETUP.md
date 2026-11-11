@@ -39,7 +39,7 @@ Check each handle after you create the collection (it shows under "Search engine
 
 ## 5. Pages and menus
 - **Page:** Online Store > Pages > Add page, title "Size guide", set template to `page.size-guide`. The handle must be `size-guide`.
-- **Menu `main-menu`:** Gift hampers (`/collections/gift-hampers`), Oversized wear, Bottles, Photo frames, Size guide.
+- **Menu `main-menu`:** Gift hampers (`/collections/gift-hampers`), Oversized wear, Bottles, Photo frames, Size guide, FAQ (`/#faq`).
 - **Menu `footer`:** the links you want in the footer's Shop column.
 - **Menu `collection-chips`:** Gift hampers, Oversized wear, Water bottles, Tote bags, Photo frames. These become the filter chips on collection pages.
 
@@ -51,7 +51,7 @@ Check each handle after you create the collection (it shows under "Search engine
 
 ## 6. Theme settings (Customise)
 - Theme settings > Contact and social: your real WhatsApp number (digits with country code, e.g. `919876543210`), email, Instagram handle.
-- Home page: add a hero photo, and photos or collection images for the category tiles. Theme settings > Look switches between the light and dark colour scheme.
+- Home page: add your photos to the hero, then check each section's text.
 - Upload a favicon and a social sharing image.
 
 ## 7. Money and shipping (Settings)

@@ -12,6 +12,24 @@
     });
   }
 
+  /* countdown */
+  var cd = document.querySelector('[data-countdown]');
+  if (cd) {
+    var target = new Date(cd.getAttribute('data-countdown'));
+    var note = document.querySelector('[data-cd-note]');
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    var tick = function () {
+      var d = Math.max(0, target - new Date());
+      cd.querySelector('[data-d]').textContent = Math.floor(d / 864e5);
+      cd.querySelector('[data-h]').textContent = pad(Math.floor(d % 864e5 / 36e5));
+      cd.querySelector('[data-m]').textContent = pad(Math.floor(d % 36e5 / 6e4));
+      cd.querySelector('[data-s]').textContent = pad(Math.floor(d % 6e4 / 1e3));
+      if (d === 0 && note) note.textContent = 'Merry Christmas. Thank you for celebrating with us.';
+    };
+    tick();
+    setInterval(tick, 1000);
+  }
+
   /* product form: variant selection, price, quantity, gallery */
   var form = document.querySelector('[data-product-form]');
   if (form) {

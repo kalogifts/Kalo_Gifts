@@ -42,7 +42,7 @@
     {%- if product.type != blank -%}<span class="label">{{ product.type }}</span>{%- endif -%}
     <h1>{{ product.title }}</h1>
     <div class="price" data-price>{{ current_variant.price | money_without_trailing_zeros }}</div>
-    <small class="meta">Shipping calculated at checkout.</small>
+    <small class="meta">Price includes GST. Delivery calculated at checkout.</small>
 
     <div class="desc">{{ product.description }}</div>
 
@@ -99,6 +99,8 @@
 
     <div class="assure">
       {%- if whatsapp_only == false and gift_message -%}<div><b>Gift card included.</b> Add a message above and we'll write it on the card in the box.</div>{%- endif -%}
+      <div><b>Packed in 2–3 days.</b> Chennai delivery 1–2 days, Tamil Nadu 3–4, rest of India 4–7.</div>
+      <div><b>Damaged on arrival?</b> Message us within 48 hours with a photo and we'll replace it.</div>
     </div>
   </div>
 </div>

@@ -1,3 +1,7 @@
+{%- liquid
+  assign threshold = settings.free_shipping_threshold | times: 100
+  assign remaining = threshold | minus: cart.total_price
+-%}
 <div class="wrap cart">
   {%- if cart.item_count == 0 -%}
     <div class="empty">
@@ -5,10 +9,23 @@
       <a class="btn gold" href="{{ routes.all_products_collection_url }}">Browse the gifts <span aria-hidden="true">→</span></a>
     </div>
   {%- else -%}
-    <div class="head">
+    <div class="head" style="margin-bottom:30px">
+      <span class="idx">Your bag</span>
       <h1>Your <em>bag</em></h1>
+      <span></span>
     </div>
 
+    {%- if settings.free_shipping_threshold > 0 -%}
+      <div class="freebar">
+        {%- if remaining > 0 -%}
+          Add {{ remaining | money_without_trailing_zeros }} more for free delivery.
+        {%- else -%}
+          You've unlocked free delivery.
+        {%- endif -%}
+        {%- assign pct = cart.total_price | times: 100 | divided_by: threshold -%}
+        <i><span style="width:{% if pct > 100 %}100{% else %}{{ pct }}{% endif %}%"></span></i>
+      </div>
+    {%- endif -%}
 
     <form action="{{ routes.cart_url }}" method="post" novalidate>
       {%- for item in cart.items -%}
@@ -35,11 +52,11 @@
 
       <div class="sum">
         <div class="note">
-          <label for="cart-note">Note for your order (optional)</label>
+          <label for="cart-note">Delivery note (landmark, or write "pickup" for Chennai collection)</label>
           <textarea id="cart-note" name="note">{{ cart.note }}</textarea>
         </div>
         <div class="total">{{ cart.total_price | money_without_trailing_zeros }}</div>
-        <small class="meta">Shipping calculated at checkout.</small>
+        <small class="meta">Includes GST. Delivery calculated at checkout.</small>
         <div class="cta" style="margin-top:6px">
           <button class="btn ghost" type="submit" name="update">Update bag</button>
           <button class="btn gold" type="submit" name="checkout">Checkout <span aria-hidden="true">→</span></button>
