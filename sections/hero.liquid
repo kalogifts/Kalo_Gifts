@@ -1,19 +1,65 @@
-<section class="wrap hero">
-  <div class="hero-copy">
-    <span class="label">{{ section.settings.eyebrow }}</span>
-    <h1>{{ section.settings.line1 }} <em>{{ section.settings.line2 }}</em></h1>
-    <p class="lede">{{ section.settings.lede }}</p>
-    <div class="cta">
-      {%- if section.settings.cta1_label != blank -%}<a class="btn gold" href="{{ section.settings.cta1_link | default: routes.all_products_collection_url }}">{{ section.settings.cta1_label }} <span aria-hidden="true">→</span></a>{%- endif -%}
-      {%- if section.settings.cta2_label != blank -%}<a class="btn ghost" href="{{ section.settings.cta2_link | default: routes.all_products_collection_url }}">{{ section.settings.cta2_label }}</a>{%- endif -%}
+{%- assign msg_blocks = section.blocks | where: 'type', 'message' -%}
+<section class="hero-band">
+  <div class="wrap hero">
+    <div class="hero-copy">
+      <span class="label">{{ section.settings.eyebrow }}</span>
+      <h1>{{ section.settings.line1 }} <em>{{ section.settings.line2 }}</em></h1>
+      <p class="lede">{{ section.settings.lede }}</p>
+      <div class="cta">
+        {%- if section.settings.cta1_label != blank -%}<a class="btn gold" href="{{ section.settings.cta1_link | default: routes.all_products_collection_url }}">{{ section.settings.cta1_label }} <span aria-hidden="true">→</span></a>{%- endif -%}
+        {%- if section.settings.cta2_label != blank -%}<a class="btn ghost" href="{{ section.settings.cta2_link | default: routes.all_products_collection_url }}">{{ section.settings.cta2_label }}</a>{%- endif -%}
+      </div>
     </div>
-  </div>
-  <div class="hero-art">
-    {%- if section.settings.image != blank -%}
-      {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 800, 1000', sizes: '(min-width: 860px) 45vw, 100vw', alt: section.settings.image.alt | default: 'KALO Christmas gifts' }}
-    {%- else -%}
-      <div class="ph">{% render 'icon', name: 'hamper' %}<span>Add a hero photo</span></div>
-    {%- endif -%}
+
+    <div class="hero-art{% if section.settings.image != blank %} has-photo{% endif %}">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '500, 800, 1000', sizes: '(min-width: 860px) 45vw, 100vw', alt: section.settings.image.alt | default: 'KALO Christmas gifts' }}
+      {%- else -%}
+        <div class="gift" data-gift>
+          <button class="gift-btn" type="button" data-gift-btn aria-expanded="false" aria-label="Open the gift">
+            <svg class="gift-svg" viewBox="0 0 300 300" aria-hidden="true" focusable="false">
+              <defs>
+                <radialGradient id="gGlow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#F6DFA0" stop-opacity=".9"/><stop offset="1" stop-color="#F6DFA0" stop-opacity="0"/></radialGradient>
+                <linearGradient id="gRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C2352F"/><stop offset="1" stop-color="#8E1F22"/></linearGradient>
+                <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C79B4A"/><stop offset=".5" stop-color="#F2DEAE"/><stop offset="1" stop-color="#C79B4A"/></linearGradient>
+                <linearGradient id="gRay" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F6DFA0" stop-opacity=".75"/><stop offset="1" stop-color="#F6DFA0" stop-opacity="0"/></linearGradient>
+              </defs>
+              <ellipse cx="150" cy="276" rx="104" ry="9" fill="#000" opacity=".28"/>
+              <circle class="g-glow" cx="150" cy="150" r="140" fill="url(#gGlow)"/>
+              <path class="g-rays" d="M104 160 L40 10 L112 10 Z M150 160 L128 0 L172 0 Z M196 160 L188 10 L260 10 Z" fill="url(#gRay)"/>
+              <rect x="62" y="156" width="176" height="114" rx="6" fill="url(#gRed)"/>
+              <rect x="140" y="156" width="20" height="114" fill="url(#gGold)"/>
+              <rect x="62" y="156" width="176" height="14" fill="#6E1519" opacity=".55"/>
+              <g class="g-sparks" fill="#F6DFA0">
+                <path d="M70 90 l4 12 12 4 -12 4 -4 12 -4 -12 -12 -4 12 -4z"/>
+                <path d="M232 70 l3 9 9 3 -9 3 -3 9 -3 -9 -9 -3 9 -3z"/>
+                <path d="M196 30 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5 -7 -7 -2.5 7 -2.5z"/>
+                <path d="M104 24 l2.5 7 7 2.5 -7 2.5 -2.5 7 -2.5 -7 -7 -2.5 7 -2.5z"/>
+              </g>
+              <g class="g-lid">
+                <rect x="52" y="122" width="196" height="40" rx="6" fill="url(#gRed)"/>
+                <rect x="140" y="122" width="20" height="40" fill="url(#gGold)"/>
+                <rect x="52" y="154" width="196" height="8" rx="3" fill="#6E1519" opacity=".45"/>
+                <path d="M150 122 C128 84 92 96 112 118 C122 128 144 124 150 122Z" fill="url(#gGold)"/>
+                <path d="M150 122 C172 84 208 96 188 118 C178 128 156 124 150 122Z" fill="url(#gGold)"/>
+                <path d="M150 122 C142 142 128 150 120 152 M150 122 C158 142 172 150 180 152" stroke="#C79B4A" stroke-width="7" stroke-linecap="round" fill="none"/>
+                <circle cx="150" cy="122" r="9" fill="#E6C27A"/>
+              </g>
+            </svg>
+          </button>
+          <div class="gift-note" role="status" aria-live="polite"><p data-gift-note></p></div>
+          <p class="gift-hint" data-gift-hint>Tap the gift for a message</p>
+          <ul hidden>
+            {%- for block in msg_blocks -%}<li data-gift-msg>{{ block.settings.text }}</li>{%- endfor -%}
+            {%- if msg_blocks.size == 0 -%}
+              <li data-gift-msg>The reason for the season? It's Him.</li>
+              <li data-gift-msg>Wishing you a Christmas full of peace and joy.</li>
+              <li data-gift-msg>Wise men still seek Him. Merry Christmas!</li>
+            {%- endif -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
   </div>
 </section>
 
@@ -29,7 +75,12 @@
     { "type": "url", "id": "cta1_link", "label": "Primary button link" },
     { "type": "text", "id": "cta2_label", "label": "Secondary button", "default": "Build a hamper" },
     { "type": "url", "id": "cta2_link", "label": "Secondary button link" },
-    { "type": "image_picker", "id": "image", "label": "Hero photo (4:5 works best)" }
+    { "type": "image_picker", "id": "image", "label": "Photo (optional)", "info": "Leave empty to show the gift box that opens when tapped. Add a photo to replace it." }
+  ],
+  "blocks": [
+    { "type": "message", "name": "Gift message", "settings": [
+      { "type": "textarea", "id": "text", "label": "Message shown when the gift opens", "default": "Wishing you a Christmas full of peace and joy." }
+    ] }
   ],
   "presets": [ { "name": "Hero" } ]
 }

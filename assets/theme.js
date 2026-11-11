@@ -144,4 +144,21 @@
     });
     raf = requestAnimationFrame(draw);
   }
+
+  /* gift box: tap to open and read a message */
+  document.querySelectorAll('[data-gift]').forEach(function (g) {
+    var btn = g.querySelector('[data-gift-btn]');
+    var note = g.querySelector('[data-gift-note]');
+    var hint = g.querySelector('[data-gift-hint]');
+    var msgs = [].map.call(g.querySelectorAll('[data-gift-msg]'), function (li) { return li.textContent.trim(); }).filter(Boolean);
+    var i = -1;
+    if (!btn || !msgs.length) return;
+    btn.addEventListener('click', function () {
+      var open = g.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+      btn.setAttribute('aria-label', open ? 'Close the gift' : 'Open the gift');
+      if (open) { i = (i + 1) % msgs.length; note.textContent = msgs[i]; }
+      if (hint) hint.textContent = open ? 'Tap to close' : 'Tap for another message';
+    });
+  });
 })();

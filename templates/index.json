@@ -5,7 +5,39 @@
       "settings": {
         "cta1_link": "shopify://collections/christmas-edition",
         "cta2_link": "shopify://products/build-your-own-hamper"
-      }
+      },
+      "blocks": {
+        "m1": {
+          "type": "message",
+          "settings": {
+            "text": "The reason for the season? It's Him."
+          }
+        },
+        "m2": {
+          "type": "message",
+          "settings": {
+            "text": "Wishing you a Christmas full of peace and joy."
+          }
+        },
+        "m3": {
+          "type": "message",
+          "settings": {
+            "text": "You are loved more than you know. Merry Christmas!"
+          }
+        },
+        "m4": {
+          "type": "message",
+          "settings": {
+            "text": "Wise men still seek Him. Merry Christmas!"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3",
+        "m4"
+      ]
     },
     "strip": {
       "type": "service-strip",
