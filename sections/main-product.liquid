@@ -1,7 +1,8 @@
 {%- liquid
   assign current_variant = product.selected_or_first_available_variant
   assign gift_message = true
-  if product.tags contains 'no-gift-message'
+  assign gc = all_products['handwritten-gift-card']
+  if product.tags contains 'no-gift-card'
     assign gift_message = false
   endif
   assign whatsapp_only = false
@@ -42,7 +43,7 @@
     {%- if product.type != blank -%}<span class="label">{{ product.type }}</span>{%- endif -%}
     <h1>{{ product.title }}</h1>
     <div class="price" data-price>{{ current_variant.price | money_without_trailing_zeros }}</div>
-    <small class="meta">Price includes GST. Delivery calculated at checkout.</small>
+    <small class="meta">Delivery calculated at checkout.</small>
 
     <div class="desc">{{ product.description }}</div>
 
@@ -63,11 +64,17 @@
         {%- endfor -%}
       {%- endunless -%}
 
-      {%- if gift_message and whatsapp_only == false -%}
-        <div class="field">
-          <label for="gift-message">Gift card message (free, optional)</label>
-          <textarea id="gift-message" name="properties[Gift message]" rows="3" maxlength="200" placeholder="Merry Christmas, Anna! With love, Joe" autocomplete="off"></textarea>
-          <small>We handwrite this on the card that goes in the box. Up to 200 characters. If you're ordering several gifts, add each message separately.</small>
+      {%- if gift_message and whatsapp_only == false and gc != blank -%}
+        <div class="gc" data-gc data-gc-handle="{{ gc.handle }}">
+          <label>
+            <input type="checkbox" data-gc-toggle>
+            <span>Add a handwritten gift card</span>
+            <span class="gc-price">+{{ gc.price | money_without_trailing_zeros }}</span>
+          </label>
+          <div class="gc-body" data-gc-body hidden>
+            <textarea rows="4" maxlength="300" placeholder="Merry Christmas, Anna! With love, Joe" data-gc-text aria-label="Gift card message"></textarea>
+            <small><span>We handwrite your message and put it in the box.</span><span><span data-gc-count>0</span>/300</span></small>
+          </div>
         </div>
       {%- endif -%}
 
@@ -93,15 +100,11 @@
         {%- else -%}
           <p class="meta">Add your WhatsApp number in Theme settings to enable the Customise button.</p>
         {%- endif -%}
-        <small>{% if whatsapp_only %}Made to order. Send us your photo and your words, and we'll share a preview before we make it.{% else %}Want a different design, extra items or a bulk order? Chat with us and we'll make it yours.{% endif %}</small>
+        <small>{% if whatsapp_only %}Tell us what you'd like in the box and we'll confirm the details and the price on WhatsApp.{% else %}Want to swap a design or change what's in the box? Chat with us and we'll sort it out.{% endif %}</small>
       </div>
     {%- endif -%}
 
-    <div class="assure">
-      {%- if whatsapp_only == false and gift_message -%}<div><b>Gift card included.</b> Add a message above and we'll write it on the card in the box.</div>{%- endif -%}
-      <div><b>Packed in 2–3 days.</b> Chennai delivery 1–2 days, Tamil Nadu 3–4, rest of India 4–7.</div>
-      <div><b>Damaged on arrival?</b> Message us within 48 hours with a photo and we'll replace it.</div>
-    </div>
+    <div class="assure"><b>Chennai delivery in 1–2 days.</b> Shipped across India, free above {{ settings.free_shipping_threshold | times: 100 | money_without_trailing_zeros }}.</div>
   </div>
 </div>
 

@@ -7,9 +7,10 @@ it with your real products before launch (you can also edit in Shopify after imp
 
 Tags the theme understands:
   badge:Bestseller   shows a badge on the product card
+  christmas-edition  puts the product in the Christmas edition section
   customisable       shows a "Customise on WhatsApp" button next to Add to bag
-  whatsapp-only      no Add to bag, orders go through WhatsApp only (not used right now)
-  no-gift-message    hides the gift card message box
+  whatsapp-only      no Add to bag, orders go through WhatsApp only
+  no-gift-card       hides the handwritten gift card option
 """
 import csv, itertools, os
 
@@ -18,154 +19,133 @@ SIZES = ["S", "M", "L", "XL", "XXL"]
 
 COLS = [
     "Handle", "Title", "Body (HTML)", "Vendor", "Type", "Tags", "Published",
-    "Option1 Name", "Option1 Value", "Option2 Name", "Option2 Value",
+    "Option1 Name", "Option1 Value", "Option2 Name", "Option2 Value", "Option3 Name", "Option3 Value",
     "Variant SKU", "Variant Grams", "Variant Inventory Tracker",
     "Variant Inventory Policy", "Variant Fulfillment Service", "Variant Price",
     "Variant Requires Shipping", "Variant Taxable", "Image Src", "Image Position",
     "Image Alt Text", "SEO Title", "SEO Description", "Variant Weight Unit", "Status",
 ]
 
-BOTTLE_NAMES = ["It's Him", "Loud Faith", "The Manger", "Rent Free", "Let Him Reign", "Still Seek Him"]
-
-# ---------------------------------------------------------------- oversized tees (PLACEHOLDER names/prices)
+# ---------------------------------------------------------------- oversized tees: 6 designs, 2 for Christmas
+# PLACEHOLDER names, colours and price until the real photos and list arrive
+TEE_PRICE = 799
 TEES = [
-    ("its-him-oversized-tee", "It's Him Oversized Tee", ["White", "Black"], "badge:Bestseller"),
-    ("loud-faith-oversized-tee", "Loud Faith Oversized Tee", ["Black", "Oat"], ""),
-    ("merry-and-bright-oversized-tee", "Merry & Bright Oversized Tee", ["White", "Bottle green"], ""),
-    ("joy-oversized-tee", "Joy Oversized Tee", ["Oat", "Red"], "badge:New"),
-    ("let-it-snow-oversized-tee", "Let It Snow Oversized Tee", ["Black", "Sky blue"], ""),
+    ("its-him-oversized-tee", "It's Him Oversized Tee", ["White", "Black"], "badge:Bestseller", False),
+    ("loud-faith-oversized-tee", "Loud Faith Oversized Tee", ["Black", "Oat"], "", False),
+    ("rent-free-oversized-tee", "Rent Free Oversized Tee", ["White", "Oat"], "", False),
+    ("still-seek-him-oversized-tee", "Still Seek Him Oversized Tee", ["Black", "Bottle green"], "", False),
+    ("merry-and-bright-oversized-tee", "Merry & Bright Oversized Tee", ["White", "Bottle green"], "badge:Christmas", True),
+    ("let-it-snow-oversized-tee", "Let It Snow Oversized Tee", ["Black", "Sky blue"], "badge:Christmas", True),
 ]
-TEE_PRICE = 799  # PLACEHOLDER
 
 
-def tee(h, title, colors, badge):
-    tags = ", ".join(t for t in [badge, "tee", "oversized", "apparel", "christmas", "customisable"] if t)
+def tee(h, title, colors, badge, xmas):
+    tags = ", ".join(t for t in [badge, "tee", "oversized", "apparel", "christmas-edition" if xmas else ""] if t)
     return dict(
         handle=h, title=title, type="T-shirt", price=TEE_PRICE, grams=260,
         options=[("Colour", colors), ("Size", SIZES)], tags=tags,
-        body="<p>Oversized fit, printed front. Soft cotton that drapes well and wears in.</p>"
-             "<p>Measured flat in inches. See the size guide for chest, length and shoulder. Between sizes? Take your usual size, the fit is already relaxed.</p>"
-             "<p>Want it as a gift? Add a message for the card below, or ask for it in a hamper.</p>",
-        seo_title=f"{title} | Printed Oversized T-shirt India | KALO Gifts",
-        seo_desc=f"{title}: printed oversized tee in soft cotton. Gift-ready with a handwritten card. Packed by hand in Chennai, delivered across India.")
+        body="<p>Oversized fit with a printed design. Soft cotton that drapes well and wears in.</p>"
+             "<p>Measured flat in inches. See the size guide for chest, length and shoulder.</p>",
+        seo_title=f"{title} | Printed Oversized T-shirt | KALO Gifts Chennai",
+        seo_desc=f"{title}: printed oversized tee in soft cotton. A faith-inspired gift from KALO Gifts, Chennai. Shipped across India.")
 
 
-# ---------------------------------------------------------------- hoodie (PLACEHOLDER)
+# ---------------------------------------------------------------- hoodie (1)
 HOODIE = dict(
-    handle="cosy-season-hoodie", title="Cosy Season Hoodie", type="Hoodie", price=1299, grams=650,
-    options=[("Colour", ["Bottle green", "Black", "Oat"]), ("Size", SIZES)],
-    tags="badge:Most gifted, hoodie, oversized, apparel, christmas, customisable",
-    body="<p>Printed oversized hoodie in brushed fleece. Cosy to wear, easy to gift.</p>"
+    handle="oversized-hoodie", title="Oversized Hoodie", type="Hoodie", price=1299, grams=650,
+    options=[("Colour", ["Black", "Bottle green", "Oat"]), ("Size", SIZES)],
+    tags="badge:Most gifted, hoodie, oversized, apparel",
+    body="<p>Oversized hoodie in brushed fleece with a printed design. Cosy to wear, easy to gift.</p>"
          "<p>Measured flat in inches. See the size guide for chest, length and sleeve.</p>",
-    seo_title="Printed Oversized Hoodie | Christmas Gift | KALO Gifts Chennai",
-    seo_desc="Printed oversized hoodie in brushed fleece. Gift-ready with a handwritten card. Packed by hand in Chennai, delivered across India.")
+    seo_title="Printed Oversized Hoodie | KALO Gifts Chennai",
+    seo_desc="Printed oversized hoodie in brushed fleece from KALO Gifts, Chennai. Shipped across India.")
 
-# ---------------------------------------------------------------- water bottles
-BOTTLES = [
-    ("its-him-bottle", "It's Him", "The reason for the season? It's Him.", "Isaiah 9:6", "Hot pink", "badge:Bestseller"),
-    ("loud-faith-bottle", "Loud Faith", "Silent night, loud faith. No off season.", "John 1:5", "Black", ""),
-    ("the-manger-bottle", "The Manger", "The King of kings picked a manger.", "Luke 2:7", "Purple", ""),
-    ("rent-free-bottle", "Rent Free", "Jesus lives rent free in my heart.", "Ephesians 3:17", "Blush pink", "badge:New"),
-    ("let-him-reign-bottle", "Let Him Reign", "Let it snow, let Him reign.", "Revelation 11:15", "Sky blue", ""),
-    ("still-seek-him-bottle", "Still Seek Him", "Wise men still seek Him.", "Matthew 2:2", "Navy", ""),
+# ---------------------------------------------------------------- bottles: 15 designs, 2 for Christmas (mostly thermo flasks)
+# First 6 use your existing lines. 7 to 15 are PLACEHOLDERS until the printed bottles are ready.
+BOTTLE_PRICE = 599
+KNOWN = [
+    ("its-him-bottle", "It's Him", "The reason for the season? It's Him.", "Isaiah 9:6", "badge:Bestseller", False),
+    ("loud-faith-bottle", "Loud Faith", "Silent night, loud faith. No off season.", "John 1:5", "", False),
+    ("the-manger-bottle", "The Manger", "The King of kings picked a manger.", "Luke 2:7", "badge:Christmas", True),
+    ("rent-free-bottle", "Rent Free", "Jesus lives rent free in my heart.", "Ephesians 3:17", "badge:New", False),
+    ("let-him-reign-bottle", "Let Him Reign", "Let it snow, let Him reign.", "Revelation 11:15", "badge:Christmas", True),
+    ("still-seek-him-bottle", "Still Seek Him", "Wise men still seek Him.", "Matthew 2:2", "", False),
 ]
+BOTTLES = KNOWN + [(f"bottle-design-{n:02d}", f"Bottle Design {n:02d}", "", "", "", False) for n in range(7, 16)]
 
 
-def bottle(h, name, line, verse, colour, badge):
-    tags = ", ".join(t for t in [badge, "bottle", "water-bottle", "christmas"] if t)
+def bottle(h, name, line, verse, badge, xmas):
+    tags = ", ".join(t for t in [badge, "bottle", "christmas-edition" if xmas else ""] if t)
+    if line:
+        body = f"<p><em>“{line}”</em></p><p>{verse} (ESV). Printed thermo flask.</p>"
+        seo_desc = f"Printed thermo flask with the line “{line}” and {verse}. From KALO Gifts, Chennai. Shipped across India."
+    else:
+        body = "<p>Printed thermo flask. Design details coming soon.</p>"
+        seo_desc = "Printed thermo flask from KALO Gifts, Chennai. Shipped across India."
     return dict(
-        handle=h, title=f"{name} Steel Water Bottle", type="Bottle", price=599, grams=420, options=None, tags=tags,
-        body=f"<p><em>“{line}”</em></p><p>{verse} (ESV). Printed steel water bottle in {colour.lower()}.</p>",
-        seo_title=f"{name} Printed Steel Water Bottle | KALO Gifts",
-        seo_desc=f"Printed steel water bottle in {colour.lower()} with the line “{line}” and {verse}. Delivered across India with a gift card.")
+        handle=h, title=f"{name} Thermo Flask", type="Bottle", price=BOTTLE_PRICE, grams=420, options=None, tags=tags,
+        body=body, seo_title=f"{name} Printed Thermo Flask | KALO Gifts", seo_desc=seo_desc)
 
 
-# ---------------------------------------------------------------- tote bags (PLACEHOLDER)
-TOTES = [
-    ("merry-and-bright-tote", "Merry & Bright Tote Bag"),
-    ("loud-faith-tote", "Loud Faith Tote Bag"),
-]
-
-
-def tote(h, title):
-    return dict(
-        handle=h, title=title, type="Tote bag", price=349, grams=150,
-        options=[("Colour", ["Natural", "Black"])], tags="tote, bag, christmas, customisable",
-        body="<p>Printed canvas tote bag. Roomy for daily use, light enough to gift.</p>",
-        seo_title=f"{title} | Printed Canvas Tote | KALO Gifts",
-        seo_desc=f"{title}: printed canvas tote bag. Gift-ready with a handwritten card. Packed in Chennai, delivered across India.")
-
-
-# ---------------------------------------------------------------- gift hampers (PLACEHOLDER contents/prices)
-HAMPERS = [
-    dict(handle="the-christmas-hamper", title="The Christmas Hamper", price=1699, grams=900,
-         options=[("Tee size", SIZES), ("Bottle", BOTTLE_NAMES)],
-         tags="badge:Gift set, hamper, gift-hamper, christmas, customisable",
-         body="<p>A ready-to-gift box with an oversized printed tee, a printed steel water bottle and a handwritten card in your words.</p>"
-              "<p>Pick the tee size and the bottle. Want a different tee, extra items or a photo frame in the box? Tap <b>Customise on WhatsApp</b>.</p>"),
-    dict(handle="the-cosy-hamper", title="The Cosy Hamper", price=2299, grams=1300,
-         options=[("Hoodie size", SIZES), ("Bottle", BOTTLE_NAMES)],
-         tags="hamper, gift-hamper, christmas, customisable",
-         body="<p>A ready-to-gift box with our printed oversized hoodie, a printed steel water bottle and a handwritten card in your words.</p>"
-              "<p>Pick the hoodie size and the bottle. Want to add a tote bag or a photo frame? Tap <b>Customise on WhatsApp</b>.</p>"),
-]
-
-
-def hamper(d):
-    d = dict(d, type="Hamper")
-    d["seo_title"] = f"{d['title']} | Christmas Gift Hamper India | KALO Gifts"
-    d["seo_desc"] = f"{d['title']}: a gift-ready box with printed apparel, a steel bottle and a handwritten card. Packed in Chennai, delivered across India."
-    return d
-
-
-# ---------------------------------------------------------------- printed photo frames (PLACEHOLDER designs/prices)
+# ---------------------------------------------------------------- photo frames (MOCK until the printed frames are ready)
 FRAME_DESIGNS = [
-    ("its-him-frame", "It's Him Frame", "The reason for the season? It's Him.", "badge:New"),
-    ("manger-frame", "The Manger Frame", "The King of kings picked a manger.", ""),
-    ("let-him-reign-frame", "Let Him Reign Frame", "Let it snow, let Him reign.", ""),
+    ("its-him-frame", "It's Him Photo Frame", "badge:New", False),
+    ("the-manger-frame", "The Manger Photo Frame", "badge:Christmas", True),
+    ("still-seek-him-frame", "Still Seek Him Photo Frame", "", False),
 ]
-FRAME_PRICES = {"A5": 599, "A4": 899}  # PLACEHOLDER
+FRAME_PRICES = {"A5": 599, "A4": 899}  # PLACEHOLDER sizes and prices
 
 
-def frame(h, title, line, badge):
-    tags = ", ".join(t for t in [badge, "frame", "photo-frame", "christmas"] if t)
+def frame(h, title, badge, xmas):
+    tags = ", ".join(t for t in [badge, "frame", "photo-frame", "christmas-edition" if xmas else ""] if t)
     return dict(
         handle=h, title=title, type="Frame", price=FRAME_PRICES["A5"], grams=500,
-        options=[("Size", ["A5", "A4"])], tags=tags,
-        body=f"<p>A printed photo frame with the line <em>“{line}”</em>. Ready to hang or stand, ready to gift.</p>",
-        seo_title=f"{title} | Printed Photo Frame Gift India | KALO Gifts",
-        seo_desc=f"{title}: printed photo frame with a Christmas message. Gift-ready with a handwritten card. Packed in Chennai, delivered across India.")
+        options=[("Size", list(FRAME_PRICES))], tags=tags,
+        body="<p>A printed photo frame with a message, with a photo inside. Ready to hang or stand, ready to gift.</p>",
+        seo_title=f"{title} | Printed Photo Frame Gift | KALO Gifts Chennai",
+        seo_desc=f"{title}: printed photo frame with a message. From KALO Gifts, Chennai. Shipped across India.")
 
 
-# gift wrap add-on
-WRAP = dict(handle="gift-wrap", title="Gift Wrap", type="Add-on", price=49, grams=20, options=None,
-            tags="no-gift-message, add-on",
-            body="<p>Hand-wrapped in KALO paper with a ribbon. Add one per gift.</p>",
-            seo_title="Gift Wrap Add-on | KALO Gifts", seo_desc="Add hand gift wrapping to any KALO gift for Rs. 49.")
+# ---------------------------------------------------------------- hampers: tee + bottle + photo frame
+HAMPERS = [
+    dict(handle="the-christmas-hamper", title="The Christmas Hamper", type="Hamper", price=1899, grams=1500,
+         options=[("Tee", ["Merry & Bright", "Let It Snow"]), ("Size", SIZES), ("Bottle", ["The Manger", "Let Him Reign"])],
+         tags="badge:Christmas, hamper, christmas-edition, customisable",
+         body="<p>A ready-to-gift box with a Christmas edition tee, a Christmas edition thermo flask and a printed photo frame.</p>"
+              "<p>Choose your tee, size and bottle above. Want to swap a design or change what's in the box? Tap <b>Customise on WhatsApp</b>.</p>",
+         seo_title="The Christmas Hamper | Tee, Bottle and Photo Frame Gift Box | KALO Gifts",
+         seo_desc="A Christmas gift hamper with an oversized tee, a thermo flask and a photo frame, from KALO Gifts, Chennai. Shipped across India."),
+    dict(handle="build-your-own-hamper", title="Build Your Own Hamper", type="Hamper", price=1499, grams=1500,
+         options=None, tags="hamper, whatsapp-only, no-gift-card",
+         body="<p>Pick any tee, any bottle and any photo frame, and we'll box them as a gift hamper.</p>"
+              "<p>Tap <b>Customise on WhatsApp</b>, tell us what you'd like in the box, and we'll confirm the price and details with you.</p>",
+         seo_title="Build Your Own Gift Hamper | KALO Gifts Chennai",
+         seo_desc="Build a custom gift hamper with an oversized tee, a thermo flask and a photo frame. Order on WhatsApp. KALO Gifts, Chennai."),
+]
+
+# ---------------------------------------------------------------- handwritten gift card add-on (Rs. 50, added to the bag from product pages)
+GIFT_CARD = dict(
+    handle="handwritten-gift-card", title="Handwritten Gift Card", type="Add-on", price=50, grams=10, options=None,
+    tags="add-on, no-gift-card",
+    body="<p>A card with your message handwritten by us, tucked into the box. Up to 300 characters.</p>",
+    seo_title="Handwritten Gift Card Add-on | KALO Gifts", seo_desc="Add a handwritten gift card with your message to any KALO gift for Rs. 50.")
 
 
 def rows_for(p):
     base = {
-        "Vendor": "KALO Gifts", "Type": p["type"],
-        "Tags": p["tags"] + (", gifts" if p["type"] not in ("Add-on",) else ""),
-        "Published": "TRUE", "Status": "active",
+        "Vendor": "KALO Gifts", "Type": p["type"], "Tags": p["tags"], "Published": "TRUE", "Status": "active",
         "Variant Inventory Tracker": "", "Variant Inventory Policy": "continue",
         "Variant Fulfillment Service": "manual", "Variant Taxable": "TRUE",
         "Variant Weight Unit": "g", "Variant Grams": p["grams"], "Variant Requires Shipping": "TRUE",
     }
     opts = p.get("options")
-    if opts:
-        combos = list(itertools.product(*[vals for _, vals in opts]))
-    else:
-        combos = [("Default Title",)]
+    combos = list(itertools.product(*[vals for _, vals in opts])) if opts else [("Default Title",)]
     out = []
     for i, combo in enumerate(combos):
         r = {k: "" for k in COLS}
         r.update(base)
         r["Handle"] = p["handle"]
-        price = p["price"]
-        if p["type"] == "Frame":
-            price = FRAME_PRICES[combo[0]]
+        price = FRAME_PRICES[combo[0]] if p["type"] == "Frame" else p["price"]
         r["Variant Price"] = f"{price:.2f}"
         if opts:
             for n, ((oname, _), val) in enumerate(zip(opts, combo), start=1):
@@ -174,7 +154,7 @@ def rows_for(p):
         else:
             r["Option1 Name"] = "Title" if i == 0 else ""
             r["Option1 Value"] = "Default Title"
-        parts = [p["handle"].upper().replace("-", "")[:10]] + [c.upper().replace(" ", "")[:5] for c in combo if c != "Default Title"]
+        parts = [p["handle"].upper().replace("-", "")[:18]] + [c.upper().replace(" ", "").replace("&", "")[:5] for c in combo if c != "Default Title"]
         r["Variant SKU"] = "-".join(parts)
         if i == 0:
             r["Title"], r["Body (HTML)"] = p["title"], p["body"]
@@ -188,7 +168,7 @@ def rows_for(p):
 
 def catalogue():
     items = [tee(*t) for t in TEES] + [HOODIE] + [bottle(*b) for b in BOTTLES]
-    items += [tote(*t) for t in TOTES] + [hamper(h) for h in HAMPERS] + [frame(*f) for f in FRAME_DESIGNS] + [WRAP]
+    items += [frame(*f) for f in FRAME_DESIGNS] + HAMPERS + [GIFT_CARD]
     return items
 
 
@@ -201,6 +181,7 @@ if __name__ == "__main__":
         w.writeheader()
         n = 0
         for p in items:
+            assert len(p["options"] or []) <= 3 and len(rows_for(p)) <= 100, p["handle"]
             for r in rows_for(p):
                 assert r["Variant SKU"] not in seen, r["Variant SKU"]
                 seen.add(r["Variant SKU"])
