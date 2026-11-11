@@ -7,9 +7,9 @@
       <p>{{ collection.description | strip_html | truncate: 160 }}</p>
     </div>
 
-    {%- if section.settings.show_chips and linklists[section.settings.chips_menu].links.size > 0 -%}
+    {%- if section.settings.show_chips and section.settings.chips_menu.links.size > 0 -%}
       <div class="chips" role="navigation" aria-label="Filter gifts">
-        {%- for link in linklists[section.settings.chips_menu].links -%}
+        {%- for link in section.settings.chips_menu.links -%}
           <a class="chip" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
         {%- endfor -%}
       </div>
